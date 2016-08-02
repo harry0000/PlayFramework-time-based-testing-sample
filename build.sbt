@@ -1,4 +1,5 @@
 
+name := "Time-basedTestingSample"
 
 version := "1.0"
 
