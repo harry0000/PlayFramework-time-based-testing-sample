@@ -25,6 +25,10 @@ object TestClockProvider extends ClockProvider {
     clock = Clock.fixed(offsetTime.atDate(LocalDate.now(offset)).toInstant, offset)
   }
 
+  def plusMillis(millisToAdd: Long): Unit = {
+    clock = Clock.fixed(clock.instant().plusMillis(millisToAdd), clock.getZone)
+  }
+
   def reset(): Unit = { clock = Clock.systemUTC() }
 }
 
