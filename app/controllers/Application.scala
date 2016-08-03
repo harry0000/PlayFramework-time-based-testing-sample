@@ -5,11 +5,11 @@ import javax.inject._
 import play.api.Configuration
 import play.api.mvc._
 import play.twirl.api.Html
-import utils.TimeUtil
+import utils.ClockProvider
 
 @Singleton
-class Application @Inject() (val timeUtil: TimeUtil,
-                             val configuration: Configuration) extends Controller with MaintenanceController with MaintenancePage with MaintenanceApi {
+class Application @Inject() (val configuration: Configuration,
+                             implicit val clockProvider: ClockProvider) extends Controller with MaintenanceController with MaintenancePage with MaintenanceApi {
 
   def maintenancePage: Html = views.html.maintenance("Under maintenance.")
 

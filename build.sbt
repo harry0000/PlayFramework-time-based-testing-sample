@@ -1,5 +1,5 @@
 
-name := "Time-basedTestingSample"
+name := "PlayTime-basedTestingSample"
 
 version := "1.0"
 

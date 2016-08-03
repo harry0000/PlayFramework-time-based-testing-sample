@@ -5,17 +5,17 @@ import java.time.OffsetTime
 import play.api.Configuration
 import play.api.mvc._
 import play.twirl.api.Html
-import utils.TimeUtil
+import utils.{ClockProvider, JaTime}
 
 import scala.concurrent.Future
 
 trait MaintenanceController {
   this: Controller =>
 
-  def timeUtil: TimeUtil
+  implicit val clockProvider: ClockProvider
   def configuration: Configuration
 
-  def now: OffsetTime = timeUtil.JaTime().toOffsetTime
+  def now: OffsetTime = JaTime().toOffsetTime
 
   def maintenanceStart: OffsetTime = OffsetTime.parse(configuration.getString("maintenance.start").getOrElse("00:00+00:00"))
   def maintenanceEnd:   OffsetTime = OffsetTime.parse(configuration.getString("maintenance.end").getOrElse("00:00+00:00"))

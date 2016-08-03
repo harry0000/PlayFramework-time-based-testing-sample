@@ -28,43 +28,38 @@ object TestClockProvider extends ClockProvider {
   def reset(): Unit = { clock = Clock.systemUTC() }
 }
 
-@Singleton
-class TimeUtil @Inject() (clock: ClockProvider) {
+sealed trait Offset {
+  protected def offset: ZoneOffset
+}
 
-  sealed trait Offset {
-    protected def offset: ZoneOffset
-  }
+sealed trait UTCOffset extends Offset {
+  def offset: ZoneOffset = ZoneOffset.UTC
+}
 
-  sealed trait UTCOffset extends Offset {
-    def offset: ZoneOffset = ZoneOffset.UTC
-  }
+sealed trait JaOffset extends Offset {
+  def offset: ZoneOffset = ZoneOffset.ofHours(9)
+}
 
-  sealed trait JaOffset extends Offset {
-    def offset: ZoneOffset = ZoneOffset.ofHours(9)
-  }
+sealed trait Time {
+  val toOffsetTime: OffsetTime
+  def toMillis: Long = toOffsetTime.getLong(ChronoField.MILLI_OF_DAY)
+}
 
-  sealed trait Time {
-    val toOffsetTime: OffsetTime
-    def toMillis: Long = toOffsetTime.getLong(ChronoField.MILLI_OF_DAY)
-  }
+sealed  trait TimeCompanion {
+  this: Offset =>
 
-  sealed  trait TimeCompanion {
-    this: Offset =>
+  def now(implicit clockProvider: ClockProvider): OffsetTime = OffsetTime.ofInstant(clockProvider.now, offset)
+  def toOffsetTime(epochMilli: Long): OffsetTime = OffsetTime.ofInstant(Instant.ofEpochMilli(epochMilli), offset)
+}
 
-    def now: OffsetTime = OffsetTime.ofInstant(clock.now, offset)
-    def toOffsetTime(epochMilli: Long): OffsetTime = OffsetTime.ofInstant(Instant.ofEpochMilli(epochMilli), offset)
-  }
+case class UTCTime private (toOffsetTime: OffsetTime) extends Time
+object UTCTime extends UTCOffset with TimeCompanion {
+  def apply()(implicit clockProvider: ClockProvider): UTCTime = UTCTime(now)
+  def apply(epochMilli: Long): UTCTime = UTCTime(toOffsetTime(epochMilli))
+}
 
-  case class UTCTime private (toOffsetTime: OffsetTime) extends Time
-  object UTCTime extends UTCOffset with TimeCompanion {
-    def apply(): UTCTime = UTCTime(now)
-    def apply(epochMilli: Long): UTCTime = UTCTime(toOffsetTime(epochMilli))
-  }
-
-  case class JaTime private (toOffsetTime: OffsetTime) extends Time
-  object JaTime extends JaOffset with TimeCompanion {
-    def apply(): JaTime = JaTime(now)
-    def apply(epochMilli: Long): JaTime = JaTime(toOffsetTime(epochMilli))
-  }
-
+case class JaTime private (toOffsetTime: OffsetTime) extends Time
+object JaTime extends JaOffset with TimeCompanion {
+  def apply()(implicit clockProvider: ClockProvider): JaTime = JaTime(now)
+  def apply(epochMilli: Long): JaTime = JaTime(toOffsetTime(epochMilli))
 }
