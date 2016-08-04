@@ -13,10 +13,9 @@ trait MaintenanceController {
   this: Controller =>
 
   implicit val clockProvider: ClockProvider
-  def configuration: Configuration
-
   def now: OffsetTime = JaTime().toOffsetTime
 
+  def configuration: Configuration
   def maintenanceStart: OffsetTime = OffsetTime.parse(configuration.getString("maintenance.start").getOrElse("00:00+00:00"))
   def maintenanceEnd:   OffsetTime = OffsetTime.parse(configuration.getString("maintenance.end").getOrElse("00:00+00:00"))
 
