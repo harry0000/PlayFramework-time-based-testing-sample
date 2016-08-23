@@ -5,7 +5,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.TimeTestSupport
 
-class ApplicationSpec extends PlaySpec with OneAppPerTest with TimeTestSupport {
+class RootControllerSuite extends PlaySpec with OneAppPerTest with TimeTestSupport {
 
   "index action" should {
     "render index page" in withFixture {

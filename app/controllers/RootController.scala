@@ -8,8 +8,8 @@ import play.twirl.api.Html
 import time.ClockProvider
 
 @Singleton
-class Application @Inject() (val configuration: Configuration,
-                             implicit val clockProvider: ClockProvider) extends Controller with MaintenanceController with MaintenancePage with MaintenanceApi {
+class RootController @Inject()(val configuration: Configuration,
+                               implicit val clockProvider: ClockProvider) extends Controller with MaintenanceController with MaintenancePage with MaintenanceApi {
 
   def maintenancePage: Html = views.html.maintenance("Under maintenance.")
 
