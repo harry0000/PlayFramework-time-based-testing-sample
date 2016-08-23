@@ -1,4 +1,4 @@
-package utils
+package time
 
 import java.time._
 import java.time.temporal.ChronoField

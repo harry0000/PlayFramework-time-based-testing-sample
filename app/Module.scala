@@ -1,6 +1,6 @@
 import play.api._
 import play.api.inject.{Binding, Module => PlayModule}
-import utils._
+import time._
 
 class Module extends PlayModule {
 

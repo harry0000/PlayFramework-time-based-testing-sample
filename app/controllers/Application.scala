@@ -5,7 +5,7 @@ import javax.inject._
 import play.api.Configuration
 import play.api.mvc._
 import play.twirl.api.Html
-import utils.ClockProvider
+import time.ClockProvider
 
 @Singleton
 class Application @Inject() (val configuration: Configuration,

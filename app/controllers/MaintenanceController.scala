@@ -5,7 +5,7 @@ import java.time.OffsetTime
 import play.api.Configuration
 import play.api.mvc._
 import play.twirl.api.Html
-import utils.{ClockProvider, JaTime}
+import time.{ClockProvider, JaTime}
 
 import scala.concurrent.Future
 

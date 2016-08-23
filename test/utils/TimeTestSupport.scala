@@ -7,6 +7,7 @@ import org.scalatestplus.play.OneAppPerTest
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import time.{ClockProvider, TestClockProvider}
 
 import scala.language.implicitConversions
 
