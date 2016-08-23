@@ -3,9 +3,9 @@ package controllers
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.TimeTestSupport
+import utils.TimeTestSpec
 
-class RootControllerSuite extends PlaySpec with OneAppPerTest with TimeTestSupport {
+class RootControllerSuite extends PlaySpec with OneAppPerTest with TimeTestSpec {
 
   "index action" should {
     "render index page" in withFixture {

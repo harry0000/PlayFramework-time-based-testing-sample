@@ -4,17 +4,17 @@ import java.time.OffsetTime
 
 import org.scalatest.TestData
 import org.scalatestplus.play.OneAppPerTest
+import org.specs2.execute._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test._
 import time.{ClockProvider, TestClockProvider}
 
 import scala.language.implicitConversions
 
-trait TimeTestSupport extends Fixture {
-  this: OneAppPerTest =>
-
-  implicit override def newAppForTest(td: TestData): Application =
+trait TimeTestSupport {
+  def newApp: Application =
     new GuiceApplicationBuilder()
       .configure(
         "maintenance.start" -> "00:00+09:00",
@@ -23,20 +23,40 @@ trait TimeTestSupport extends Fixture {
       .overrides(bind[ClockProvider].toInstance(TestClockProvider))
       .build()
 
-  def fixture(): Unit = {
-    TestClockProvider.reset()
-  }
-
-  def startMaintenance(): Unit = {
+  def startMaintenance()(implicit app: Application): Unit = {
     TestClockProvider.fixed(
       OffsetTime.parse(app.configuration.getString("maintenance.start").get)
     )
   }
 
-  def finishMaintenance(): Unit = {
+  def finishMaintenance()(implicit app: Application): Unit = {
     TestClockProvider.fixed(
       OffsetTime.parse(app.configuration.getString("maintenance.end").get)
     )
   }
+}
 
+/** for ScalaTest */
+trait TimeTestSpec extends TimeTestSupport with Fixture {
+  this: OneAppPerTest =>
+
+  implicit override def newAppForTest(td: TestData): Application = newApp
+
+  def fixture(): Unit = {
+    TestClockProvider.reset()
+  }
+}
+
+/** for Specs2 */
+trait TimeTestSpecification extends TimeTestSupport {
+  abstract class WithFixture extends WithApplication(newApp) {
+    override def around[T: AsResult](t: => T): Result = {
+      try {
+        super.around(t)
+      }
+      finally {
+        TestClockProvider.reset()
+      }
+    }
+  }
 }
