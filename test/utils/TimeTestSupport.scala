@@ -23,17 +23,11 @@ trait TimeTestSupport {
       .overrides(bind[ClockProvider].toInstance(TestClockProvider))
       .build()
 
-  def startMaintenance()(implicit app: Application): Unit = {
-    TestClockProvider.fixed(
-      OffsetTime.parse(app.configuration.getString("maintenance.start").get)
-    )
-  }
+  def startMaintenance()(implicit app: Application): Unit = TestClockProvider.fixed(getOffsetTime("maintenance.start"))
 
-  def finishMaintenance()(implicit app: Application): Unit = {
-    TestClockProvider.fixed(
-      OffsetTime.parse(app.configuration.getString("maintenance.end").get)
-    )
-  }
+  def finishMaintenance()(implicit app: Application): Unit = TestClockProvider.fixed(getOffsetTime("maintenance.end"))
+
+  def getOffsetTime(key: String)(implicit app: Application): OffsetTime = OffsetTime.parse(app.configuration.getString(key).get)
 }
 
 /** for ScalaTest */
